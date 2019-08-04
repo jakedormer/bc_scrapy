@@ -1,7 +1,7 @@
 # project_directory/scrapinghub.yml
 
 projects:
-  default: 401085
+  default: 402936
   prod: 33333
 
 stacks:
