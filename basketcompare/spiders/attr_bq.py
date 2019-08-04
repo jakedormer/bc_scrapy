@@ -7,7 +7,7 @@ from basketcompare.spiders.price_bq import *
 import json
 
 class BQ_Attr_Spider(BQSpider):
-	name = "bq_attr_spider"
+	name = "attr_bq"
 
 
 	def parse(self, response):

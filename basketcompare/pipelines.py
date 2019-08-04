@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from datetime import datetime
 
 
 class ItemPipeline(object):
@@ -17,9 +18,13 @@ class ItemPipeline(object):
 		client = storage.Client.from_service_account_json(credentials)
 
 		# Make an authenticated API request
+		scrape_type = spider.name.split("_")[0]
+		scrape_retailer = spider.name.split("_")[1]
+		yyyymmdd = datetime.today().strftime('%Y-%m-%d')
+
 		bucket = client.get_bucket('basketcompare')
-		file_path = "/tmp/wickes/2019-08-04.csv"
-		blob = bucket.blob("price_scrape/wickes/wickes_20190801")
+		file_path = "/tmp/"+ spider.name + "_" + yyyymmdd + ".csv"
+		blob = bucket.blob(scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
 		blob.upload_from_filename(file_path)
 
 

@@ -5,7 +5,7 @@ from basketcompare.spiders.price_wickes import *
 
 
 class Wickes_Attr_Spider(WickesSpider):
-	name = "wickes_attr_spider"
+	name = "attr_wickes"
 	custom_settings = {
 
 	}
