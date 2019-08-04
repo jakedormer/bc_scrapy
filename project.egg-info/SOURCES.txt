@@ -1,0 +1,17 @@
+setup.py
+basketcompare/__init__.py
+basketcompare/items.py
+basketcompare/middlewares.py
+basketcompare/pipelines.py
+basketcompare/settings.py
+basketcompare/spiders/__init__.py
+basketcompare/spiders/attr_raw_bq.py
+basketcompare/spiders/attr_raw_wickes.py
+basketcompare/spiders/main.py
+basketcompare/spiders/price_bq.py
+basketcompare/spiders/price_wickes.py
+project.egg-info/PKG-INFO
+project.egg-info/SOURCES.txt
+project.egg-info/dependency_links.txt
+project.egg-info/entry_points.txt
+project.egg-info/top_level.txt

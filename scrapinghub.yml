@@ -1,0 +1,11 @@
+# project_directory/scrapinghub.yml
+
+projects:
+  default: 401085
+  prod: 33333
+
+stacks:
+  default: scrapy:1.1-py3
+
+requirements:
+  file: Pipfile
