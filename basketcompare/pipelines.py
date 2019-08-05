@@ -7,6 +7,7 @@ from datetime import datetime
 class ItemPipeline(object):
 
 	def process_item(self, item, spider):
+		item['promo_price'] = "hello"
 		return item
 
 	def close_spider(self, spider):
@@ -20,11 +21,12 @@ class ItemPipeline(object):
 		# Make an authenticated API request
 		scrape_type = spider.name.split("_")[0]
 		scrape_retailer = spider.name.split("_")[1]
-		yyyymmdd = datetime.today().strftime('%Y-%m-%d')
+		yyyymmdd = datetime.today().strftime('%Y%m%d')
 
-		bucket = client.get_bucket('basketcompare')
+		bucket = client.get_bucket('basketcompare/')
 		file_path = "/tmp/"+ spider.name + "_" + yyyymmdd + ".csv"
-		blob = bucket.blob(scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
+		# blob = bucket.blob("/" + scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
+		blob = bucket.blob("/" + scrape_type)
 		blob.upload_from_filename(file_path)
 
 

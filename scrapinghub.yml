@@ -5,7 +5,7 @@ projects:
   prod: 33333
 
 stacks:
-  default: scrapy:1.7-py3
+  default: scrapy:1.1-py3
 
 requirements:
   file: Pipfile

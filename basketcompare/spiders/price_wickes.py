@@ -13,7 +13,7 @@ class WickesSpider(MainSpider):
 
     custom_settings = {
         'FEED_EXPORT_FIELDS': ["date", "sku_1", "sku_2", "description", "shelf_price", "promo_price", "promotion"],
-        'FEED_URI': "/tmp/" + name + "/" + datetime.today().strftime('%Y-%m-%d') + ".csv"
+        'FEED_URI': "/tmp/" + name.split("_")[0] + "/" + name.split("_")[1] + "/" + name.split("_")[1] + datetime.today().strftime('%Y%m%d') + ".csv"
     }
 
     allowed_domains = ["wickes.co.uk"]
