@@ -2,57 +2,119 @@
 
 import os
 from datetime import datetime
+import re
+import json
 
 
 class ItemPipeline(object):
 
+	def regex_promo(self, shelf_price, promotion):
+	    # print("£",shelf_price,", ", promotion)
+	    # x for £xx
+	    x = re.search('(?!.*?each)([0-9]+) for £(\d*\.?\d*).*', promotion, re.IGNORECASE)
+	    if x:
+	        x1 = round(float(x.group(2)) / float(x.group(1)), 2)
+	        print(x1)
+	        return x1
+	        
+	     # x or more for £x.xx?
+	    x = re.search('.*[0-9]+ or more for £(\d*\.?\d*).*', promotion, re.IGNORECASE)
+	    if x:
+	        x1 = round(float(x.group(1)), 2)
+	        print(x1)
+	        return x1
+	        
+	        
+	    # £x.xx each when you buy x or more
+	    x = re.search('.*£(\d*\.?\d*) each', promotion, re.IGNORECASE)
+	    if x:
+	        x1 = round(float(x.group(1)), 2)
+	        print(x1)
+	        return x1
+	    
+	    # Buy 1 get 1 free
+	    x = re.search('(buy (one|1) get (one|1) free|bogof)', promotion, re.IGNORECASE)
+	    if x:
+	        x1 = round(shelf_price / 2, 2)
+	        print(x1)
+	        return x1
+	    
+	   
+	    # x for (the price of)? x
+	    x = re.search('.*([3-5]) for (the price of )?([2-4]).*', promotion, re.IGNORECASE)
+	    if x:
+	        if x.group(3):
+	            x1 = round(shelf_price * (float(x.group(3)) / float(x.group(1))), 2)
+	            print(x1)
+	            return x1
+	        else:
+	            x1 = round(shelf_price * (float(x.group(2)) / float(x.group(1))), 2)
+	            print(x1)
+	            return x1
+	    
+	    # xx% off when you spend £x +
+	    x = re.search('([0-9]+)% off.*when you spend.* £(\d*\.?\d*).*', promotion, re.IGNORECASE)
+	    if x:
+	        if shelf_price > float(x.group(2)):
+	            x1 = round(shelf_price * (1 - float(x.group(1)) / 100), 2)
+	            print(x1)
+	            return x1
+	        else:
+	            print(shelf_price)
+	            return shelf_price
+	    
+	    # £x off when you spend £x +
+	    x = re.search('£(\d*\.?\d*).*when you spend.*£(\d*\.?\d*).*', promotion, re.IGNORECASE)
+	    if x:
+	        if shelf_price > float(x.group(2)):
+	            x1 = round(shelf_price - float(x.group(1)), 2)
+	            print(x1)
+	            return x1
+	        else:
+	            print(shelf_price)
+	            return shelf_price
+	    
+	    
+	    # xx% off, discount applied at checkout
+	    x = re.search('([0-9]+)% off.*checkout.*', promotion, re.IGNORECASE)
+	    if x:
+	        x1 = round(shelf_price * (1 - float(x.group(1)) / 100), 2)
+	        print(x1)
+	        return x1
+	    else:
+	        print(shelf_price)
+	        return shelf_price
+
 	def process_item(self, item, spider):
-		item['promo_price'] = "hello"
+		# item['promotion'] = "3 for the price of 2"
+		item['shelf_price'] = round(float(item['shelf_price'][0]), 2) # Because item loader returns a list. Convert string to float.
+		try:
+			item['promo_price'] = self.regex_promo(item['shelf_price'], item['promotion'])
+		except TypeError: # For when promotion == None
+			item['promo_price'] = item['shelf_price']
+
 		return item
 
 	def close_spider(self, spider):
 		from google.cloud import storage
-		dir_path = os.path.dirname(os.path.realpath(__file__))
-		credentials = os.path.join(dir_path, 'basketcompare-ac7c8362ee1f.json')
+
+
+		# Create json object from Credentials Dict
+		credentials = spider.settings.get('CREDENTIALS')
+		with open("/tmp/data.json", "w") as f:
+			json.dump(credentials, f)
 
 		# Explicitly use service account credentials by specifying the private key
-		client = storage.Client.from_service_account_json(credentials)
+		client = storage.Client.from_service_account_json('/tmp/data.json')
 
 		# Make an authenticated API request
 		scrape_type = spider.name.split("_")[0]
 		scrape_retailer = spider.name.split("_")[1]
 		yyyymmdd = datetime.today().strftime('%Y%m%d')
 
-		bucket = client.get_bucket('basketcompare/')
-		file_path = "/tmp/"+ spider.name + "_" + yyyymmdd + ".csv"
+		bucket = client.get_bucket('basketcompare')
+		file_path = scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + yyyymmdd + ".csv"
+		local_file_path = "/tmp/" + file_path
 		# blob = bucket.blob("/" + scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
-		blob = bucket.blob("/" + scrape_type)
-		blob.upload_from_filename(file_path)
-
-
-# class GCSFilesStore(GCSFilesStore):
-
-# 	def process_item(self, item, spider):
-#         return item
-
-#     def close_spider(self, spider):
-#         from google.cloud import storage
-#         client = storage.Client.from_service_account_json('basketcompare-ac7c8362ee1f.json')
-#         bucket, prefix = uri[5:].split('/', 1)
-#         self.bucket = client.bucket(bucket)
-#         self.prefix = prefix
-
-# def explicit():
-#     from google.cloud import storage
-
-#     credentials = 'basketcompare-ac7c8362ee1f.json'
-
-#     # Explicitly use service account credentials by specifying the private key
-#     # file.
-#     storage_client = storage.Client.from_service_account_json('basketcompare-ac7c8362ee1f.json')
-
-#     # Make an authenticated API request
-#     buckets = list(storage_client.list_buckets())
-#     print(buckets)
-
-# explicit()
+		blob = bucket.blob(file_path)
+		blob.upload_from_filename(local_file_path)

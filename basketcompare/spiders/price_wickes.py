@@ -10,10 +10,12 @@ from basketcompare.spiders.main import *
 
 class WickesSpider(MainSpider):
     name = "price_wickes"
+    scrape_type = name.split("_")[0]
+    scrape_retailer = name.split("_")[1]
 
     custom_settings = {
         'FEED_EXPORT_FIELDS': ["date", "sku_1", "sku_2", "description", "shelf_price", "promo_price", "promotion"],
-        'FEED_URI': "/tmp/" + name.split("_")[0] + "/" + name.split("_")[1] + "/" + name.split("_")[1] + datetime.today().strftime('%Y%m%d') + ".csv"
+        'FEED_URI': "/tmp/" + scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + datetime.today().strftime('%Y%m%d') + ".csv"
     }
 
     allowed_domains = ["wickes.co.uk"]
@@ -35,7 +37,7 @@ class WickesSpider(MainSpider):
         l.add_css('sku1', 'strong#product-code-val::text')
         l.add_value('sku2', '')
         l.add_css('description', 'h1.pdp__heading::text')
-        l.add_value('shelf_price', re.search('(\d+\.?\d*)', response.css('div.pdp-price__new-price::text').extract_first()).group(1))
+        l.add_value('shelf_price', re.search('(\d+\.?\d*)', response.css('div.pdp-price__new-price::text').extract_first()).group(1)),
         l.add_value('promo_price', None)
         l.add_value('promotion', " ".join(response.css('.pdp-price__description::text').extract()))
 
