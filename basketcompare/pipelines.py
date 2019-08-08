@@ -97,15 +97,16 @@ class ItemPipeline(object):
 
 	def close_spider(self, spider):
 		from google.cloud import storage
+		from google.oauth2 import service_account
 
 
 		# Create json object from Credentials Dict
-		credentials = spider.settings.get('CREDENTIALS')
-		with open("/tmp/data.json", "w") as f:
-			json.dump(credentials, f)
+		dumped = json.dumps(spider.settings.get('CREDENTIALS'))
+		loaded = json.loads(dumped)
+		credentials = service_account.Credentials.from_service_account_info(loaded) # Dumps = data to json, loads = json to python.
 
 		# Explicitly use service account credentials by specifying the private key
-		client = storage.Client.from_service_account_json('/tmp/data.json')
+		client = storage.Client(project="basketcompare-247312", credentials=credentials)
 
 		# Make an authenticated API request
 		scrape_type = spider.name.split("_")[0]
