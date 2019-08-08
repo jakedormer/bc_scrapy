@@ -12,6 +12,8 @@ google-cloud-storage = "*"
 shub = "*"
 rsa = "<=3.5.0"
 scrapy = "~=1.5"
+urllib3 = "<1.24"
+pyyaml = "~=3.12"
 
 [requires]
 python_version = "3.6"
