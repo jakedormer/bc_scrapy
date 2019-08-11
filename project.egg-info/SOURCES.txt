@@ -4,9 +4,10 @@ basketcompare/items.py
 basketcompare/middlewares.py
 basketcompare/pipelines.py
 basketcompare/settings.py
+basketcompare/testing.py
 basketcompare/spiders/__init__.py
-basketcompare/spiders/attr_raw_bq.py
-basketcompare/spiders/attr_raw_wickes.py
+basketcompare/spiders/attr_bq.py
+basketcompare/spiders/attr_wickes.py
 basketcompare/spiders/main.py
 basketcompare/spiders/price_bq.py
 basketcompare/spiders/price_wickes.py

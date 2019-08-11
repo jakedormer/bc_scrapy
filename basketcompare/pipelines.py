@@ -101,8 +101,10 @@ class ItemPipeline(object):
 
 
 		# Create json object from Credentials Dict
-		dumped = json.dumps(spider.settings.get('CREDENTIALS'))
-		loaded = json.loads(dumped)
+		settings_credentials = str(spider.settings.get('CREDENTIALS'))
+		# dumped = json.dumps(spider.settings.get('CREDENTIALS'))
+		loaded = json.loads(settings_credentials.replace("\'", "\""))
+		# loaded = json.loads(spider.settings.get('CREDENTIALS'))
 		credentials = service_account.Credentials.from_service_account_info(loaded) # Dumps = data to json, loads = json to python.
 
 		# Explicitly use service account credentials by specifying the private key
