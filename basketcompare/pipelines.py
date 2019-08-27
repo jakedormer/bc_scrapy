@@ -6,7 +6,7 @@ import re
 import json
 
 
-class ItemPipeline(object):
+class PriceItemPipeline(object):
 
 	def regex_promo(self, shelf_price, promotion):
 	    # print("£",shelf_price,", ", promotion)
@@ -73,6 +73,16 @@ class ItemPipeline(object):
 	        else:
 	            print(shelf_price)
 	            return shelf_price
+
+	    # Buy 1 get 1 half price
+	    x = re.search('buy (one|1).*half price.*', promotion, re.IGNORECASE)
+	    if x:
+	        x1 = round(shelf_price * 0.75, 2)
+	        print(x1)
+	        return x1
+	    else:
+	        print(shelf_price)
+	        return shelf_price
 	    
 	    
 	    # xx% off, discount applied at checkout
@@ -86,38 +96,51 @@ class ItemPipeline(object):
 	        return shelf_price
 
 	def process_item(self, item, spider):
-		# item['promotion'] = "3 for the price of 2"
+		# To Remove lists
+		item['date'] = item['date'][0]
+		item['sku_1'] = item['sku_1'][0]
+		item['sku_2'] = item['sku_2'][0]
+		# item['description'] = item['description'][0]
+		item['promotion'] = item['promotion'][0]
 		item['shelf_price'] = round(float(item['shelf_price'][0]), 2) # Because item loader returns a list. Convert string to float.
 		try:
 			item['promo_price'] = self.regex_promo(item['shelf_price'], item['promotion'])
 		except TypeError: # For when promotion == None
 			item['promo_price'] = item['shelf_price']
 
+
 		return item
 
 	def close_spider(self, spider):
-		from google.cloud import storage
-		from google.oauth2 import service_account
+		if spider.gcs == True:
+
+			from google.cloud import storage
+			from google.oauth2 import service_account
 
 
-		# Create json object from Credentials Dict
-		settings_credentials = str(spider.settings.get('CREDENTIALS'))
-		# dumped = json.dumps(spider.settings.get('CREDENTIALS'))
-		loaded = json.loads(settings_credentials.replace("\'", "\""))
-		# loaded = json.loads(spider.settings.get('CREDENTIALS'))
-		credentials = service_account.Credentials.from_service_account_info(loaded) # Dumps = data to json, loads = json to python.
+			# Create json object from Credentials Dict
+			settings_credentials = str(spider.settings.get('CREDENTIALS'))
+			# dumped = json.dumps(spider.settings.get('CREDENTIALS'))
+			loaded = json.loads(settings_credentials.replace("\'", "\""))
+			# loaded = json.loads(spider.settings.get('CREDENTIALS'))
+			credentials = service_account.Credentials.from_service_account_info(loaded) # Dumps = data to json, loads = json to python.
 
-		# Explicitly use service account credentials by specifying the private key
-		client = storage.Client(project="basketcompare-247312", credentials=credentials)
+			# Explicitly use service account credentials by specifying the private key
+			client = storage.Client(project="basketcompare-247312", credentials=credentials)
 
-		# Make an authenticated API request
-		scrape_type = spider.name.split("_")[0]
-		scrape_retailer = spider.name.split("_")[1]
-		yyyymmdd = datetime.today().strftime('%Y%m%d')
+			# Make an authenticated API request
+			scrape_type = spider.name.split("_")[0]
+			scrape_retailer = spider.name.split("_")[1]
+			yyyymmdd = datetime.today().strftime('%Y%m%d')
 
-		bucket = client.get_bucket('basketcompare')
-		file_path = scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + yyyymmdd + ".csv"
-		local_file_path = "/tmp/" + file_path
-		# blob = bucket.blob("/" + scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
-		blob = bucket.blob(file_path)
-		blob.upload_from_filename(local_file_path)
+			bucket = client.get_bucket('basketcompare')
+			file_path = scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + yyyymmdd + ".json"
+			local_file_path = "/tmp/" + file_path
+			# blob = bucket.blob("/" + scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
+			blob = bucket.blob(file_path)
+			blob.upload_from_filename(local_file_path)
+
+class AttrItemPipeline(object):
+
+	def process_item(self, item, spider):
+		return item

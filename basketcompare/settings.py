@@ -18,6 +18,7 @@ ROBOTSTXT_OBEY = True
 
 
 
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
@@ -55,20 +56,20 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# EXTENSIONS = {
+#    'scrapy.extensions.closespider.CloseSpider': 500,
+# }
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   'basketcompare.pipelines.ItemPipeline': 300,
-}
+# ITEM_PIPELINES = {
+#    'basketcompare.pipelines.ItemPipeline': 300,
+# }
 
 FEED_STORE_EMPTY = False # No exporting empty datasets
 # FEED_URI =  "/tmp/%(name)s/" + datetime.today().strftime('%Y-%m-%d') + ".csv"
 URI_SCHEME = "file"
-FEED_FORMAT = "csv"
+FEED_FORMAT = "jsonlines"
 # FEED_STORAGES
 # FEED_STORAGE_FTP_ACTIVE
 # FEED_STORAGE_S3_ACL
@@ -97,5 +98,5 @@ AUTOTHROTTLE_DEBUG = False
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FEED_EXPORTERS = {
-    'csv': 'scrapy.exporters.CsvItemExporter',
+    'jsonlines': 'scrapy.exporters.JsonLinesItemExporter',
 }

@@ -15,7 +15,8 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, lik
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
-CREDENTIALS = {"type": "service_account",   "project_id": "basketcompare-247312",   "private_key_id": "b5af00a9075c2b3788c6a7c9e04372435e24f00e",   "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDKgNyOHS14r46/\nRwT0ULFRhkNumzqtSdulqCi4nSSc5T4ic07BbbZJYyqZZH8girB9qcMfrLB7tXhW\nquR4qa8DEjnpiZVnc2lVR4CumzYE8bsksFCb5kyYScriQ+AJPJYfoQ60asKDqxkD\nbjCWYNl4bvSMMt33R0bGwarP2cl7nz5Ftri/pnY//GQR4C6qrSy+kzXJvOO6U3sm\n2f2eX43UUOjUtSGi4GvKAnE/ngCGDAsfwx8HqmeR83MHlPosrl2OSxSM/ikKqrpx\nRg/7ODiwsXOHeBkcocyUSlineBtUAFdgNnBXmjtAP1hrwSHrGZ6BUCb433qbCw5i\nDDy++dsnAgMBAAECggEAC8b1zNAWmmu/ZhF30Mu2nFKuLksZ3QUsIJTIlYASJovQ\nkslY/bfnP5pkWlp1aEuYmx5Z6kgtVWyG7KdwtTHNK2UOeC4XwdX8/Mg1TDJbsGrs\nouQcNAzvTHYSNhmTeIYNBxbjV4vT9ztmr4PjkINecnolf9fff+elzp5p1D/Kz4Un\nY/wNZYJEM+acqQ73rI0xGsLQ2skZJYj0bGFQ2Umkp/AuNdc52H1ni9BPwo4EzKUU\nWt0eaCXMyO8w/S2l5/ymkgW9+bo/nVb+VLcjWXZ42RuGEaHtg07PFd5za/IaAYoY\nHNTGT/7Z5UHWaGt7qGldeIabyJtEDzrrajI9jDCFSQKBgQDt+4XUuOsKXcWnKp7y\nhlSK/wgdTnHNMixv3ABMWVN/9l0mthudcMGlPMKWkMMeJcTNSdF7TxZwqGE3pnJd\nbD2g/GfGcxjI+lzsbu081xiquv/R+PSadUChiEjEn27YECRtZIeKsRBTCYbgtZ3D\nhqAwrWfoQKlUmcZwbRU6ZQapSQKBgQDZ1bJkpLoqJrwXGD5DmJWkEY6uYy8m4Ktc\nvcD+b376P9KiyRpLBhOfrptC1OKm0rxgqidrr/eKl8QBqORYM1ssOGcmgmPTAsvl\nVcSncYJvMVhbUzUAotueDicr1ONrHj1k3ecr/ObwKmFPS1pWkycPEKcbi07r1xb3\n808UdQNQ7wKBgQCdjqGbJVZPRaf/NcOH85FzeMdph67mWGp9IF1+LsGOfZBMedKs\nmKNL/38g6fSUOBMkitPK3KCRs5ixnFwpJ+lhdNpL05W8Ma1lx0b/ubSWDDokTLu8\nqxZAG5d5vchH+d/0INNv6ixRnYQTr4okkjPqJlQduvmgjjKH6mBcidgwKQKBgQC3\npv/49Bx0LyYCvpC4AqueoKLPiZWWTHKNBPnySWQfbbGTRsMhH2VqChaiOMNB7Ief\nY7VKiBfGQ/+fepnRdrLWTFNC10l7/G6U0kOy+/MA9fRNQpB8EdHgpoQF4z088UjH\ngoJExrqZHtHdvWTTesrCW8LXaRLHqRaXQw2X7LM4BwKBgQDGQ1ldpUvyzzXs5dUa\nwHSm1udaCjl3cxv8ryl0aIbyaRXrTvO1RcJku8hGYTNjLEie+eNCcYZreHv7X8DL\n2EEHAmu2Uk2Ys9kAYn3S32xwczxkck39nrKEwGXqFU2Gbi97ktID9yvXySxSskGp\n46kI8e9cI8Hq6zTIVKs4K+7FQQ==\n-----END PRIVATE KEY-----\n",   "client_email": "cloud-storage@basketcompare-247312.iam.gserviceaccount.com",   "client_id": "101975648539855159771",   "auth_uri": "https://accounts.google.com/o/oauth2/auth",   "token_uri": "https://oauth2.googleapis.com/token",   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloud-storage%40basketcompare-247312.iam.gserviceaccount.com"}
+
+
 
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
@@ -55,20 +56,20 @@ CREDENTIALS = {"type": "service_account",   "project_id": "basketcompare-247312"
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# EXTENSIONS = {
+#    'scrapy.extensions.closespider.CloseSpider': 500,
+# }
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   'basketcompare.pipelines.ItemPipeline': 300,
-}
+# ITEM_PIPELINES = {
+#    'basketcompare.pipelines.ItemPipeline': 300,
+# }
 
 FEED_STORE_EMPTY = False # No exporting empty datasets
 # FEED_URI =  "/tmp/%(name)s/" + datetime.today().strftime('%Y-%m-%d') + ".csv"
 URI_SCHEME = "file"
-FEED_FORMAT = "csv"
+FEED_FORMAT = "jsonlines"
 # FEED_STORAGES
 # FEED_STORAGE_FTP_ACTIVE
 # FEED_STORAGE_S3_ACL
@@ -97,5 +98,5 @@ AUTOTHROTTLE_DEBUG = False
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FEED_EXPORTERS = {
-    'csv': 'scrapy.exporters.CsvItemExporter',
+    'jsonlines': 'scrapy.exporters.JsonLinesItemExporter',
 }

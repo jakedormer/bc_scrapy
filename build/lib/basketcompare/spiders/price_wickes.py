@@ -2,10 +2,10 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) #Needed to be able to import from parent directory.
 import scrapy
 from scrapy.loader import ItemLoader
-from datetime import datetime
 import re
 from items import ScrapeItem
 from basketcompare.spiders.main import *
+from scrapy.exceptions import CloseSpider
 
 
 class WickesSpider(MainSpider):
@@ -15,7 +15,10 @@ class WickesSpider(MainSpider):
 
     custom_settings = {
         'FEED_EXPORT_FIELDS': ["date", "sku_1", "sku_2", "description", "shelf_price", "promo_price", "promotion"],
-        'FEED_URI': "/tmp/" + scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + datetime.today().strftime('%Y%m%d') + ".csv"
+        'FEED_URI': "file:///tmp/" + scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + datetime.today().strftime('%Y%m%d') + ".json",
+        'ITEM_PIPELINES': {
+            'basketcompare.pipelines.PriceItemPipeline': 300,
+        },
     }
 
     allowed_domains = ["wickes.co.uk"]
@@ -25,21 +28,45 @@ class WickesSpider(MainSpider):
     ]
 
     sitemap_rules = [
-        # ('\/p\/', 'parse'),
-        ('\/p\/107177', 'parse'),
+        ('\/p\/', 'parse'),
+        # ('\/p\/122428', 'parse'),
     ]
+
 
     def parse(self, response):
 
         l = ItemLoader(item=ScrapeItem(), response=response)
 
-        l.add_value('date', datetime.today().strftime('%Y-%m-%d'))
-        l.add_css('sku1', 'strong#product-code-val::text')
-        l.add_value('sku2', '')
-        l.add_css('description', 'h1.pdp__heading::text')
-        l.add_value('shelf_price', re.search('(\d+\.?\d*)', response.css('div.pdp-price__new-price::text').extract_first()).group(1)),
-        l.add_value('promo_price', None)
-        l.add_value('promotion', " ".join(response.css('.pdp-price__description::text').extract()))
+        l.add_value('date', self.date)
 
-        return l.load_item()
+        sku_1 = response.css('strong#product-code-val::text').extract_first()
+        l.add_value('sku_1', sku_1)
+
+        l.add_value('sku_2', '')
+
+        shelf_price = re.search('(\d+\.?\d*)', response.css('div.pdp-price__new-price::text').extract_first()).group(1)
+        l.add_value('shelf_price', shelf_price),
+
+        l.add_value('promo_price', None)
+
+        # Promotions list needed as Wickes keep promotions in 2 places.
+        
+        promotions = []
+        try:
+            promotions.append(" ".join(response.css('.pdp-price__description::text').extract()).strip().replace("  ", " "))
+            promotions.append(response.css('.pdp__badge::text').extract_first().strip())
+            promotion_text = " ".join(promotions)
+        except AttributeError: # strip() fails when it doesn not find a promotion.
+            promotion_text = ''
+
+        l.add_value('promotion', promotion_text)
+        
+        if self.counter < 500:
+            if shelf_price == None or sku_1 == None:
+                self.counter += 1
+            else:
+                return l.load_item()        
+        else:
+            self.gcs = False
+            raise CloseSpider(reason='No Prices or sku_1')
 

@@ -6,15 +6,21 @@ from datetime import datetime
 import re
 from items import ScrapeItem
 from basketcompare.spiders.main import *
+import json
 
 
 
 class BQSpider(MainSpider):
     name = "price_bq"
+    scrape_type = name.split("_")[0]
+    scrape_retailer = name.split("_")[1]
 
     custom_settings = {
         'FEED_EXPORT_FIELDS': ["date", "sku_1", "sku_2", "description", "shelf_price", "promo_price", "promotion"],
-        'FEED_URI': "/tmp/" + name + "/" + datetime.today().strftime('%Y-%m-%d') + ".csv"
+        'FEED_URI': "file:///tmp/" + scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + datetime.today().strftime('%Y%m%d') + ".json",
+        'ITEM_PIPELINES': {
+            'basketcompare.pipelines.PriceItemPipeline': 300,
+        },
     }
 
     allowed_domains = ["diy.com"]
@@ -25,35 +31,44 @@ class BQSpider(MainSpider):
     ]
 
     sitemap_rules = [
-        ('_BQ', 'parse')
+        ('_BQ', 'parse'),
+        # ('243748_BQ', 'parse'),
     ]
 
 
 
     def parse(self, response):
-        # Data stored in a JSON script and so must parse this instead.
+        # Data stored in a JSON <script> and so must parse this instead.
 
-        script_text = response.xpath("//script[contains(text(), 'window.__data')]/text()").extract_first().encode('utf-8')
+        script_text = response.xpath("//script[contains(text(), 'window.__data')]/text()").extract_first()
         script_json = re.search('window.__data=(.*);', script_text).group(1)
         json_obj = json.loads(script_json)
         attributes = json_obj['product']['main']['product']['attributes']
 
-        f = open("demo.json", "w")
-        f.write(script_json)
-        f.close()
-
         l = ItemLoader(item=ScrapeItem(), response=response)
-        l.add_value('date', datetime.today().strftime('%Y-%m-%d'))
-        l.add_value('sku1', attributes['ean'])
-        l.add_value('sku2', re.search('([0-9]+_BQ)', response.url)).group(1)
-        l.add_value('description', attributes['name'])
-        l.add_value('shelf_price', attributes['pricing']['currentPrice']['amountIncTax'])
+        l.add_value('date', self.date)
+
+        sku_1 = re.search('([0-9]+_BQ)', response.url).group(1)
+        l.add_value('sku_1', sku_1)
+
+        l.add_value('sku_2', attributes['ean'])
+
+        shelf_price = attributes['pricing']['currentPrice']['amountIncTax']
+        l.add_value('shelf_price', shelf_price)
+
         l.add_value('promo_price', None)
 
         try:
             l.add_value('promotion', attributes['promotion'])
         except KeyError:
-            pass
+            l.add_value('promotion', '')
 
-        return l.load_item()
+        if self.counter < 3000: # Cancel the scrape if >= 100 missing prices or sku_1's
+            if shelf_price == None or sku_1 == None:
+                self.counter += 1
+            else:
+                return l.load_item()        
+        else:
+            self.gcs = False # Do not send data to google cloud storage
+            raise CloseSpider(reason='No Prices or sku_1')
 
