@@ -1,11 +1,4 @@
-import os, sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) #Needed to be able to import from parent directory.
-import scrapy
-from scrapy.loader import ItemLoader
-import re
-from items import ScrapeItem
 from basketcompare.spiders.main import *
-from scrapy.exceptions import CloseSpider
 
 
 class WickesSpider(MainSpider):

@@ -1,5 +1,3 @@
-import re
-import sys
 from basketcompare.spiders.price_wickes import *
 
 

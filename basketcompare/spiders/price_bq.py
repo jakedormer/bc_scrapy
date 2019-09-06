@@ -1,12 +1,7 @@
 import os, sys
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) #Needed to be able to import from parent directory.
-import scrapy
-from scrapy.loader import ItemLoader
-from datetime import datetime
-import re
-from basketcompare.items import ScrapeItem
 from basketcompare.spiders.main import *
-import json
+
 
 
 

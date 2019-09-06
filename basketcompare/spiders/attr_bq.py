@@ -1,9 +1,4 @@
-import os, sys
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from datetime import datetime
-import re
 from basketcompare.spiders.price_bq import *
-import json
 
 class BQ_Attr_Spider(BQSpider):
 	name = "attr_bq"
