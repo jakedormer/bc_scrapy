@@ -12,6 +12,3 @@ class MainSpider(SitemapSpider):
 	gcs = True
 
 
-	def promo_regex(self):
-		return self.shelf_price
-
