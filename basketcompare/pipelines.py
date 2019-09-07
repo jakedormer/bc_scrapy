@@ -8,6 +8,9 @@ import json
 
 class PriceItemPipeline(object):
 
+	def __init__(self):
+		self.items_seen = set()
+
 	def regex_promo(self, shelf_price, promotion):
 	# print("£",shelf_price,", ", promotion)
 	# x for £xx
@@ -92,20 +95,25 @@ class PriceItemPipeline(object):
 			return shelf_price
 
 	def process_item(self, item, spider):
-		# To Remove lists
-		item['date'] = item['date'][0]
-		item['sku_1'] = item['sku_1'][0]
-		item['sku_2'] = item['sku_2'][0]
-		# item['description'] = item['description'][0]
-		item['promotion'] = item['promotion'][0]
-		item['shelf_price'] = round(float(item['shelf_price'][0]), 2) # Because item loader returns a list. Convert string to float.
-		try:
-			item['promo_price'] = self.regex_promo(item['shelf_price'], item['promotion'])
-		except TypeError: # For when promotion == None
-			item['promo_price'] = item['shelf_price']
+		if item['sku_1'][0] in self.items_seen:
+			raise DropItem("Duplicate item found: %s" % item)
+		else:
+			self.items_seen.add(item['sku_1'][0]) # Add item to set
+
+			# To Remove lists
+			item['date'] = item['date'][0]
+			item['sku_1'] = item['sku_1'][0]
+			item['sku_2'] = item['sku_2'][0]
+			# item['description'] = item['description'][0]
+			item['promotion'] = item['promotion'][0]
+			item['shelf_price'] = round(float(item['shelf_price'][0]), 2) # Because item loader returns a list. Convert string to float.
+			try:
+				item['promo_price'] = self.regex_promo(item['shelf_price'], item['promotion'])
+			except TypeError: # For when promotion == None
+				item['promo_price'] = item['shelf_price']
 
 
-		return item
+			return item
 
 	def close_spider(self, spider):
 		if spider.gcs == True:
