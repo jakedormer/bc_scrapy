@@ -7,6 +7,10 @@ class BQ_Attr_Spider(BQSpider):
 
 	custom_settings = {
 		'FEED_URI': "file:///tmp/" + scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + datetime.today().strftime('%Y%m%d') + ".json",
+		'FEED_FORMAT': 'json',
+		'FEED_EXPORTERS': {
+    		'jsonlines': 'scrapy.exporters.CsvItemExporter',
+		},
 		'ITEM_PIPELINES': {
 			'basketcompare.pipelines.AttrItemPipeline': 300,
 		},

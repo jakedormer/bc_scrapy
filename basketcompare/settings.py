@@ -69,7 +69,7 @@ ROBOTSTXT_OBEY = True
 FEED_STORE_EMPTY = False # No exporting empty datasets
 # FEED_URI =  "/tmp/%(name)s/" + datetime.today().strftime('%Y-%m-%d') + ".csv"
 URI_SCHEME = "file"
-FEED_FORMAT = "jsonlines"
+FEED_FORMAT = "csv"
 # FEED_STORAGES
 # FEED_STORAGE_FTP_ACTIVE
 # FEED_STORAGE_S3_ACL
@@ -98,5 +98,5 @@ AUTOTHROTTLE_DEBUG = False
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FEED_EXPORTERS = {
-    'jsonlines': 'scrapy.exporters.JsonLinesItemExporter',
+    'jsonlines': 'scrapy.exporters.CsvItemExporter',
 }

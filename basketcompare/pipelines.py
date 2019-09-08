@@ -138,7 +138,7 @@ class PriceItemPipeline(object):
 			yyyymmdd = datetime.today().strftime('%Y%m%d')
 
 			bucket = client.get_bucket('basketcompare')
-			file_path = scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + yyyymmdd + ".json"
+			file_path = scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + yyyymmdd + ".csv"
 			local_file_path = "/tmp/" + file_path
 			# blob = bucket.blob("/" + scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
 			blob = bucket.blob(file_path)
