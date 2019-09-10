@@ -98,5 +98,5 @@ AUTOTHROTTLE_DEBUG = False
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FEED_EXPORTERS = {
-    'jsonlines': 'scrapy.exporters.CsvItemExporter',
+    'csv': 'scrapy.exporters.CsvItemExporter',
 }
