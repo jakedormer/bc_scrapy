@@ -10,7 +10,7 @@ class Wickes_Attr_Spider(WickesSpider):
         'FEED_URI': "file:///tmp/" + scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + datetime.today().strftime('%Y%m%d') + ".json",
         'FEED_FORMAT': 'json',
         'FEED_EXPORTERS': {
-            'jsonlines': 'scrapy.exporters.CsvItemExporter',
+            'jsonlines': 'scrapy.exporters.JsonLinesItemExporter',
         },
         'ITEM_PIPELINES': {
             'basketcompare.pipelines.AttrItemPipeline': 300,
