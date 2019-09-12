@@ -11,7 +11,7 @@ class BQSpider(MainSpider):
     scrape_retailer = name.split("_")[1]
 
     custom_settings = {
-        'FEED_EXPORT_FIELDS': ["date", "sku_1", "sku_2", "description", "shelf_price", "promo_price", "promotion"],
+        'FEED_EXPORT_FIELDS': ["date", "sku_1", "sku_2", "shelf_price", "promo_price", "promotion"],
         'FEED_URI': "file:///tmp/" + scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + datetime.today().strftime('%Y%m%d') + ".csv",
         'ITEM_PIPELINES': {
             'basketcompare.pipelines.PriceItemPipeline': 300,
