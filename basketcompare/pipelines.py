@@ -108,7 +108,7 @@ class PriceItemPipeline(object):
 
 
 		gmail_user = 'mail@basketcompare.co.uk'
-		gmail_password = "ezzjjncvrnnhodde"
+		
 
 		msg = EmailMessage()
 		msg['Subject'] = spider.name + " - " + spider.date
