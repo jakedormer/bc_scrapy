@@ -107,7 +107,8 @@ class PriceItemPipeline(object):
 	def send_email(self, spider):
 
 
-		gmail_user = 'mail@basketcompare.co.uk'
+		gmail_user = spider.settings.get('GMAIL_USER')
+		gmail_password = spider.settings.get('GMAIL_PASSWORD')
 		
 
 		msg = EmailMessage()
