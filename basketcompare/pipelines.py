@@ -4,12 +4,22 @@ import os
 from datetime import datetime
 import re
 import json
+import smtplib
+from scrapy.mail import MailSender
+from email.message import EmailMessage
+
 
 
 class PriceItemPipeline(object):
 
 	def __init__(self):
 		self.items_seen = set()
+		self.date_count = 0
+		self.sku_1_count = 0
+		self.sku_2_count = 0
+		self.description_count = 0
+		self.shelf_price_count = 0
+		self.promotion_count = 0
 
 	def regex_promo(self, shelf_price, promotion):
 	# print("£",shelf_price,", ", promotion)
@@ -94,19 +104,61 @@ class PriceItemPipeline(object):
 			print(shelf_price)
 			return shelf_price
 
+	def send_email(self, spider):
+
+
+		gmail_user = 'mail@basketcompare.co.uk'
+		gmail_password = "ezzjjncvrnnhodde"
+
+		msg = EmailMessage()
+		msg['Subject'] = spider.name + " - " + spider.date
+		msg['From'] = gmail_user
+		msg['To'] = ["contact@basketcompare.co.uk"]
+		body = "date_count: " + str(self.date_count) + "\n"
+		body += "sku_1_count: " + str(self.sku_1_count) + "\n"
+		body += "sku_2_count: " + str(self.sku_2_count) + "\n"
+		body += "promotion_count: " + str(self.promotion_count) + "\n"
+		body += "shelf_price_count: " + str(self.shelf_price_count)
+
+		msg.set_content(str(body))
+
+
+		
+		server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+		server.ehlo()
+		server.login(gmail_user, gmail_password)
+		server.send_message(msg)
+		server.close()
+
+
 	def process_item(self, item, spider):
+		# Check for duplcates first.
 		if item['sku_1'][0] in self.items_seen:
 			raise DropItem("Duplicate item found: %s" % item)
 		else:
 			self.items_seen.add(item['sku_1'][0]) # Add item to set
 
-			# To Remove lists
+			# To Remove lists & Add Counts
 			item['date'] = item['date'][0]
+			if item['date'] != '':
+				self.date_count +=1
+
 			item['sku_1'] = item['sku_1'][0]
+			if item['sku_1'] != '':
+				self.sku_1_count += 1
+			
 			item['sku_2'] = item['sku_2'][0]
-			# item['description'] = item['description'][0]
+			if item['sku_2'] != '':
+				self.sku_2_count += 1
+
 			item['promotion'] = item['promotion'][0]
-			item['shelf_price'] = round(float(item['shelf_price'][0]), 2) # Because item loader returns a list. Convert string to float.
+			if item['promotion'] != '':
+				self.promotion_count += 1
+
+			item['shelf_price'] = round(float(item['shelf_price'][0]), 2)
+			if item['shelf_price'] != '':
+				self.shelf_price_count += 1
+			
 			try:
 				item['promo_price'] = self.regex_promo(item['shelf_price'], item['promotion'])
 			except TypeError: # For when promotion == None
@@ -143,6 +195,8 @@ class PriceItemPipeline(object):
 			# blob = bucket.blob("/" + scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
 			blob = bucket.blob(file_path)
 			blob.upload_from_filename(local_file_path)
+
+		self.send_email(spider)
 
 class AttrItemPipeline(object):
 

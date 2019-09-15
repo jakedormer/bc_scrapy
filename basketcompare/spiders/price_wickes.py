@@ -23,6 +23,7 @@ class WickesSpider(MainSpider):
     sitemap_rules = [
         ('\/p\/', 'parse'),
         # ('\/p\/122428', 'parse'),
+        # ('\/p\/220056', 'parse'),
     ]
 
 
@@ -38,9 +39,9 @@ class WickesSpider(MainSpider):
         l.add_value('sku_2', '')
 
         shelf_price = re.search('(\d+\.?\d*)', response.css('div.pdp-price__new-price::text').extract_first()).group(1)
-        l.add_value('shelf_price', shelf_price),
+        l.add_value('shelf_price', shelf_price)
 
-        l.add_value('promo_price', None)
+        l.add_value('promo_price', '')
 
         # Promotions list needed as Wickes keep promotions in 2 places.
         
