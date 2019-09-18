@@ -2,7 +2,7 @@ from basketcompare.spiders.price_wickes import *
 
 
 class Wickes_Attr_Spider(WickesSpider):
-    name = "attr_wickes"
+    name = "attrraw_wickes"
     scrape_type = name.split("_")[0]
     scrape_retailer = name.split("_")[1]
 
@@ -20,7 +20,7 @@ class Wickes_Attr_Spider(WickesSpider):
 
     def parse(self, response):
         attr_dict = {}
-        attr_dict['date'] = datetime.today().strftime('%Y-%m-%d')
+        attr_dict['date'] = self.date
         attr_dict['sku_1'] = response.css('strong#product-code-val::text').extract_first()
         attr_dict['sku_2'] = ''
         attr_dict['description'] = response.css('h1.pdp__heading::text').extract_first()

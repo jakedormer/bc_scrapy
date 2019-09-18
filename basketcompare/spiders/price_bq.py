@@ -5,7 +5,7 @@ from basketcompare.spiders.main import *
 
 
 
-class BQSpider(MainSpider):
+class Price_BQ(MainSpider):
     name = "price_bq"
     scrape_type = name.split("_")[0]
     scrape_retailer = name.split("_")[1]

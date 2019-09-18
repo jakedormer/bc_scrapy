@@ -186,12 +186,9 @@ class PriceItemPipeline(object):
 			client = storage.Client(project="basketcompare-247312", credentials=credentials)
 
 			# Make an authenticated API request
-			scrape_type = spider.name.split("_")[0]
-			scrape_retailer = spider.name.split("_")[1]
-			yyyymmdd = datetime.today().strftime('%Y%m%d')
 
 			bucket = client.get_bucket('basketcompare')
-			file_path = scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + yyyymmdd + ".csv"
+			file_path = spider.scrape_type + "/" + spider.scrape_retailer + "/" + spider.scrape_retailer + "_" + spider.yyyymmdd + ".csv"
 			local_file_path = "/tmp/" + file_path
 			# blob = bucket.blob("/" + scrape_type + "/" + scrape_retailer + "/" scrape_retailer + "_" + yyyymmdd)
 			blob = bucket.blob(file_path)

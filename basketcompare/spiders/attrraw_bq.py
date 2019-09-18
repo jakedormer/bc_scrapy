@@ -1,7 +1,7 @@
 from basketcompare.spiders.price_bq import *
 
-class BQ_Attr_Spider(BQSpider):
-	name = "attr_bq"
+class BQ_Attr_Spider(Price_BQ):
+	name = "attrraw_bq"
 	scrape_type = name.split("_")[0]
 	scrape_retailer = name.split("_")[1]
 
@@ -27,7 +27,7 @@ class BQ_Attr_Spider(BQSpider):
 		
 		attributes = json_obj['product']['main']['product']['attributes']
 
-		attr_dict['date'] = datetime.today().strftime('%Y-%m-%d')
+		attr_dict['date'] = self.date
 		attr_dict['sku_1'] = re.search('([0-9]+_BQ)', response.url).group(1)
 		attr_dict['sku_2'] = attributes['ean']
 		attr_dict['description'] = attributes['name']

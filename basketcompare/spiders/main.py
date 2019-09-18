@@ -14,6 +14,7 @@ class MainSpider(SitemapSpider):
 	}
 	
 	date = datetime.today().strftime('%Y-%m-%d')
+	yyyymmdd = datetime.today().strftime('%Y%m%d')
 	counter = 0
 	gcs = True
 
