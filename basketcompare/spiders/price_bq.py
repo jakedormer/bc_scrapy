@@ -27,7 +27,7 @@ class Price_BQ(MainSpider):
 
     sitemap_rules = [
         ('_BQ', 'parse'),
-        # ('243748_BQ', 'parse'),
+        # ('219366_BQ', 'parse'),
     ]
 
 

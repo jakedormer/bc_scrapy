@@ -12,6 +12,18 @@ class ScrapeItem(scrapy.Item):
 	promotion = scrapy.Field()
 
 
+class AttrItem(scrapy.Item):
+	date = scrapy.Field()
+	sku_1 = scrapy.Field()
+	sku_2 = scrapy.Field()
+	description = scrapy.Field()
+	url = scrapy.Field()
+	taxonomy = scrapy.Field()
+	attributes = scrapy.Field()
+	image_urls = scrapy.Field()
+	images = scrapy.Field()
+	image_name = scrapy.Field()
+
 
 
 

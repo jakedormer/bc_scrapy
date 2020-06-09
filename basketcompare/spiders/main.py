@@ -2,7 +2,7 @@ import scrapy
 from scrapy.spiders import SitemapSpider
 from datetime import datetime
 from scrapy.loader import ItemLoader
-from basketcompare.items import ScrapeItem
+from basketcompare.items import ScrapeItem, AttrItem
 import re
 from scrapy.exceptions import CloseSpider
 import json

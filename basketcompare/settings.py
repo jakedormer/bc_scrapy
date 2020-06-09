@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 # Scrapy settings for wickes project
+from basketcompare.local_settings import *
+
+
 from datetime import datetime
 
 BOT_NAME = 'basketcompare'
@@ -91,8 +94,8 @@ AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-HTTPCACHE_ENABLED = True
-HTTPCACHE_EXPIRATION_SECS = 300
+# HTTPCACHE_ENABLED = True
+# HTTPCACHE_EXPIRATION_SECS = 300
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
@@ -100,5 +103,7 @@ HTTPCACHE_EXPIRATION_SECS = 300
 FEED_EXPORTERS = {
     'csv': 'scrapy.exporters.CsvItemExporter',
 }
+
+LOCALIMAGESPIPELINE_IMAGES_EXPIRES = 180
 
 
