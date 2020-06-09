@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for wickes project
-from basketcompare.local_settings import *
+
+try:
+    from basketcompare.local_settings import *
+except ImportError as e:
+    pass
 
 
 from datetime import datetime
