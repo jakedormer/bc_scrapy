@@ -24,8 +24,8 @@ class ScrewfixSpider(MainSpider):
 
     sitemap_rules = [
         # ('\/p\/', 'parse'),
-        ('\/p\/.*\/896hy', 'parse'),
-        ('\/p\/.*\/5541x', 'parse'),
+        # ('\/p\/.*\/896hy', 'parse'),
+        # ('\/p\/.*\/5541x', 'parse'),
     ]
 
 
