@@ -167,13 +167,16 @@ class PriceItemPipeline(object):
 		if item['shelf_price'] != '':
 			self.shelf_price_count += 1
 		
-		if item['promo_price']:
-			pass
-		else:
+		item['promo_price'] = item['promo_price'][0]
+		
+		if item['promo_price'] == '':
 			try:
 				item['promo_price'] = self.regex_promo(item['shelf_price'], item['promotion'])
 			except TypeError: # For when promotion == None
 				item['promo_price'] = item['shelf_price']
+		else:
+			pass
+			
 
 
 		return item

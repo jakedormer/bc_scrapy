@@ -6,6 +6,7 @@ from basketcompare.spiders.main import *
 
 
 class Price_BQ(MainSpider):
+    # gcs = False
     name = "price_bq"
     scrape_type = name.split("_")[0]
     scrape_retailer = name.split("_")[1]
@@ -27,7 +28,7 @@ class Price_BQ(MainSpider):
 
     sitemap_rules = [
         ('_BQ', 'parse'),
-        # ('219366_BQ', 'parse'),
+        # ('175944_BQ.prd', 'parse'),
     ]
 
 
@@ -51,7 +52,7 @@ class Price_BQ(MainSpider):
         shelf_price = attributes['pricing']['currentPrice']['amountIncTax']
         l.add_value('shelf_price', shelf_price)
 
-        l.add_value('promo_price', None)
+        l.add_value('promo_price', '')
 
         try:
             l.add_value('promotion', attributes['promotion'])
