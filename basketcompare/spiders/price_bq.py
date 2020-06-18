@@ -16,7 +16,8 @@ class Price_BQ(MainSpider):
         'FEED_URI': "file:///tmp/" + scrape_type + "/" + scrape_retailer + "/" + scrape_retailer + "_" + datetime.today().strftime('%Y%m%d') + ".csv",
         'ITEM_PIPELINES': {
             'basketcompare.pipelines.PriceItemPipeline': 300,
-        },
+        },        
+        'CLOSESPIDER_ITEMCOUNT': 50000,
     }
 
     allowed_domains = ["diy.com"]
